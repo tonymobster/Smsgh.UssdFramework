@@ -25,6 +25,31 @@ namespace Smsgh.UssdFramework
             Request = request;
         }
 
+        /// <summary>
+        /// Reroute context processing.
+        /// </summary>
+        /// <param name="route"></param>
+        /// <returns></returns>
+        public async Task<UssdResponse> ReRoute(string route)
+        {
+            await SessionSetNextRoute(route);
+            await SessionSetAction();
+            return await SessionExecuteAction();
+        }
+
+        /// <summary>
+        /// Return a UssdResponse.
+        /// If <paramref name="nextRoute"/> is not provided
+        /// UssdResponse.Type is set to Release.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="nextRoute"></param>
+        /// <returns></returns>
+        public UssdResponse Response(string message, string nextRoute = null)
+        {
+            return UssdResponse.New(message, nextRoute);
+        } 
+
         #region Session Management
         /// <summary>
         /// Set the next action to route to.

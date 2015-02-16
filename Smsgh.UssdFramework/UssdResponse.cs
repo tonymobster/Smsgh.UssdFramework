@@ -25,6 +25,7 @@ namespace Smsgh.UssdFramework
             {
                 Type = type,
                 Message = message,
+                NextRoute = nextRoute,
             };
         }
 

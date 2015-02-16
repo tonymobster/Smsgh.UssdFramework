@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using Smsgh.UssdFramework.Demo.UssdActions.Menus;
+﻿using System.Collections.Generic;
+using Smsgh.UssdFramework.Demo.UssdActions;
 using Smsgh.UssdFramework.Stores;
 
 namespace Smsgh.UssdFramework.Demo
 {
-    public class DemoUssd : Ussd
+    public class DemoUssd : UssdFramework.Ussd
     {
         public DemoUssd() : base(new RedisStore())
         {
@@ -16,9 +12,14 @@ namespace Smsgh.UssdFramework.Demo
 
         public void Routes()
         {
-            RouteMenu("main-menu", Default.MainMenu, new Dictionary<string, string>()
+            RouteMenu("main-menu", Menus.Main, new Dictionary<string, string>()
             {
                 {"1", "say-my-name"},
+            });
+
+            RouteMenu("say-my-name", Menus.SayMyName, new Dictionary<string, string>()
+            {
+                {"1", "say-my-name/real-name"},
             });
         }
     }

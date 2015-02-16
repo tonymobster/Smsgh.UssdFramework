@@ -83,7 +83,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UssdActions\Menus\Default.cs" />
+    <Compile Include="UssdActions\Menus.cs" />
     <Compile Include="UssdView.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Smsgh.UssdFramework\Smsgh.UssdFramework.csproj">

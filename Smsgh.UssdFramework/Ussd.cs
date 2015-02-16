@@ -36,8 +36,7 @@ namespace Smsgh.UssdFramework
             string route)
         {
             await context.SessionClose();
-            await context.SessionSetNextRoute(route);
-            return await this.OnResponse(context);
+            return await context.ReRoute(route);
         }
 
         public virtual async Task<UssdResponse> OnResponse(UssdContext context)
@@ -52,13 +51,13 @@ namespace Smsgh.UssdFramework
 
         public virtual async Task<UssdResponse> OnRelease(UssdContext context)
         {
-            return UssdResponse.New("Session closed.");
+            return context.Response("Session closed.");
         } 
 
         public virtual async Task<UssdResponse> OnTimeout(UssdContext context)
         {
             await context.SessionClose();
-            return UssdResponse.New("Session timed out.");
+            return context.Response("Session timed out.");
         } 
         #endregion
 
@@ -82,30 +81,34 @@ namespace Smsgh.UssdFramework
         public void RouteMenu(string route, Func<UssdContext, Task<string>> menu, 
             Dictionary<string, string> routeChoices)
         {
-            Route(route, MenuDisplay(route + "-router", menu));
-            Route(route + "-router", MenuRoute(route, routeChoices));
+            var routerRoute = route + "-router";
+            Route(route, MenuDisplay(routerRoute, menu));
+            Route(routerRoute, MenuRouter(route, routeChoices));
         }
 
-        private static Func<UssdContext, Task<UssdResponse>> MenuDisplay(string nextRoute, 
+        private static Func<UssdContext, Task<UssdResponse>> MenuDisplay(string routerRoute, 
             Func<UssdContext, Task<string>> menuDisplay)
         {
             return async (c) =>
             {
                 var message = await menuDisplay(c);
-                return UssdResponse.New(message, nextRoute);
+                return c.Response(message, routerRoute);
             };
         }
 
-        private Func<UssdContext, Task<UssdResponse>> MenuRoute(string menuRoute,
+        private static Func<UssdContext, Task<UssdResponse>> MenuRouter(string menuRoute,
             IReadOnlyDictionary<string, string> routeChoices)
         {
             return async (c) =>
             {
                 var choice = c.Request.SanitizedMessage;
-                var nextRoute = !routeChoices.ContainsKey(choice) 
-                    ? menuRoute : routeChoices[choice];
-                await c.SessionSetNextRoute(nextRoute);
-                return await this.OnResponse(c);
+                if (!routeChoices.ContainsKey(choice))
+                {
+                    throw new Exception(string.Format("No menu item exists " +
+                                                      "for selection {0}.", choice));
+                }
+                var nextRoute = routeChoices[choice];
+                return await c.ReRoute(nextRoute);
             };
         }
         #endregion

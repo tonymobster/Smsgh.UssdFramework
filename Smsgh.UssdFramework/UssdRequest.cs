@@ -35,7 +35,7 @@ namespace Smsgh.UssdFramework
 
         public string SanitizedMessage
         {
-            get { return Mobile.Trim(); }
+            get { return Message.Trim(); }
         }
     }
 
