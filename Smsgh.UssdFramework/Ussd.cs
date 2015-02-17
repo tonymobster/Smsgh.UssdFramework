@@ -51,6 +51,7 @@ namespace Smsgh.UssdFramework
 
         public virtual async Task<UssdResponse> OnRelease(UssdContext context)
         {
+            await context.SessionClose();
             return context.Response("Session closed.");
         } 
 
@@ -86,6 +87,12 @@ namespace Smsgh.UssdFramework
             Route(routerRoute, MenuRouter(route, routeChoices));
         }
 
+        /// <summary>
+        /// Create an action to display a menu.
+        /// </summary>
+        /// <param name="routerRoute"></param>
+        /// <param name="menuDisplay"></param>
+        /// <returns></returns>
         private static Func<UssdContext, Task<UssdResponse>> MenuDisplay(string routerRoute, 
             Func<UssdContext, Task<string>> menuDisplay)
         {
@@ -96,6 +103,12 @@ namespace Smsgh.UssdFramework
             };
         }
 
+        /// <summary>
+        /// Create an action to route a menu's choice
+        /// </summary>
+        /// <param name="menuRoute"></param>
+        /// <param name="routeChoices"></param>
+        /// <returns></returns>
         private static Func<UssdContext, Task<UssdResponse>> MenuRouter(string menuRoute,
             IReadOnlyDictionary<string, string> routeChoices)
         {
@@ -120,7 +133,7 @@ namespace Smsgh.UssdFramework
         /// <param name="startRoute"></param>
         /// <returns></returns>
         public async Task<UssdResponse> Process(UssdRequest request, 
-            string startRoute = "start")
+            string startRoute = "Start")
         {
             var context = new UssdContext(this, request);
             try

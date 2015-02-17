@@ -17,14 +17,17 @@ namespace Smsgh.UssdFramework
         private Func<UssdContext, Task<UssdResponse>> Action { get; set; }
         public UssdRequest Request { get; private set; }
         private IStore Store { get; set; }
+        public UssdDataBag DataBag { get; private set; }
 
         public UssdContext(Ussd ussd, UssdRequest request)
         {
             Store = ussd.Store;
             Routes = ussd.Routes;
             Request = request;
+            DataBag = new UssdDataBag(Store, DataBagKey);
         }
 
+        #region Responders
         /// <summary>
         /// Reroute context processing.
         /// </summary>
@@ -48,7 +51,8 @@ namespace Smsgh.UssdFramework
         public UssdResponse Response(string message, string nextRoute = null)
         {
             return UssdResponse.New(message, nextRoute);
-        } 
+        }
+        #endregion
 
         #region Session Management
         /// <summary>

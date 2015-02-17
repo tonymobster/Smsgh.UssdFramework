@@ -12,15 +12,20 @@ namespace Smsgh.UssdFramework.Demo
 
         public void Routes()
         {
-            RouteMenu("main-menu", Menus.Main, new Dictionary<string, string>()
+            RouteMenu("Start", Menus.Main, new Dictionary<string, string>()
             {
-                {"1", "say-my-name"},
+                {"1", "SayMyName"},
             });
 
-            RouteMenu("say-my-name", Menus.SayMyName, new Dictionary<string, string>()
+            RouteMenu("SayMyName", Menus.SayMyName, new Dictionary<string, string>()
             {
-                {"1", "say-my-name/real-name"},
+                {"1", "SayMyName/RealName"},
+                {"2", "SayMyName/Nickname"},
             });
+
+            Route("SayMyName/RealName", SayMyNameInputs.RealName);
+            Route("SayMyName/RealNameFirstName", SayMyNameInputs.RealNameFirstName);
+            Route("SayMyName/RealNameLastName", SayMyNameInputs.RealNameLastName);
         }
     }
 }

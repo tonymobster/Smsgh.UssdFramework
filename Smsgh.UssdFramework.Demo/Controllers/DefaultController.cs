@@ -22,7 +22,7 @@ namespace Smsgh.UssdFramework.Demo.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Index(UssdRequest request)
         {
-            return Ok(await Ussd.Process(request, "main-menu"));
+            return Ok(await Ussd.Process(request));
         } 
     }
 }
