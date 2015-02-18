@@ -33,7 +33,7 @@ namespace Smsgh.UssdFramework
             }
         }
 
-        public string SanitizedMessage
+        public string TrimmedMessage
         {
             get { return Message.Trim(); }
         }

@@ -10,21 +10,43 @@ namespace Smsgh.UssdFramework.Demo.Controllers
     {
         public async Task<UssdResponse> Menu()
         {
-            return Render("Welcome to say my name" + Environment.NewLine
-                          + "1. Full name",
+            return Render("Welcome" + Environment.NewLine
+                          + "1. Greet me" + Environment.NewLine
+                          + "2. Exit",
                 "MenuProcessor");
         }
 
         public async Task<UssdResponse> MenuProcessor()
         {
-            return Request.SanitizedMessage == "1" 
-                ? Render("Enter full  name", "FullName") 
-                : Render("No choice selected.");
+            switch (Request.TrimmedMessage)
+            {
+                case "1":
+                    return Render("Enter Name", "Name");
+                case "2":
+                    return Render("Bye bye");
+                default:
+                    return Render("Invalid menu choice");
+            }
         }
 
-        public async Task<UssdResponse> FullName()
+        public async Task<UssdResponse> Name()
         {
-            return Render(Request.SanitizedMessage);
+            var hour = DateTime.UtcNow.Hour;
+            var greeting = string.Empty;
+            if (hour < 12)
+            {
+                greeting = "Good morning";
+            }
+            if (hour >= 12)
+            {
+                greeting = "Good afternoon";
+            }
+            if (hour >= 18)
+            {
+                greeting = "Good night";
+            }
+            return Render(string.Format("{0}, {1}",
+                greeting, Request.TrimmedMessage));
         } 
     }
 }
