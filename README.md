@@ -1,6 +1,6 @@
 # Smsgh.UssdFramework (beta)
 
-This is a successor to our previous [UssdFramework](http://github.com/smsgh/ussd-framework).
+This is a natural successor to our [UssdFramework](http://github.com/smsgh/ussd-framework).
 
 ## Motivation
 
