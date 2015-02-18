@@ -10,18 +10,18 @@ using Smsgh.UssdFramework.Stores;
 
 namespace Smsgh.UssdFramework
 {
-    public class Ussd
+    public static class Ussd
     {
         #region Events
-        private async Task<UssdResponse> OnInitiation(UssdContext context, 
+        private static async Task<UssdResponse> OnInitiation(UssdContext context, 
             string route)
         {
             await context.SessionClose();
             await context.SessionSetNextRoute(route);
-            return await this.OnResponse(context);
+            return await OnResponse(context);
         }
 
-        private async Task<UssdResponse> OnResponse(UssdContext context)
+        private static async Task<UssdResponse> OnResponse(UssdContext context)
         {
             while (true)
             {
@@ -49,11 +49,11 @@ namespace Smsgh.UssdFramework
         /// </summary>
         /// <param name="store"></param>
         /// <param name="request"></param>
-        /// <param name="intiationController">Initiation controller</param>
-        /// <param name="intiationAction">Initiation action</param>
+        /// <param name="initiationController">Initiation controller</param>
+        /// <param name="initiationAction">Initiation action</param>
         /// <returns></returns>
-        public async Task<UssdResponse> Process(IStore store, UssdRequest request,
-            string intiationController, string intiationAction)
+        public static async Task<UssdResponse> Process(IStore store, UssdRequest request,
+            string initiationController, string initiationAction)
         {
             var context = new UssdContext(store, request);
             try
@@ -62,10 +62,10 @@ namespace Smsgh.UssdFramework
                 {
                     case UssdRequestTypes.Initiation:
                         var route = string.Format("{0}Controller.{1}", 
-                            intiationController, intiationAction);
-                        return await this.OnInitiation(context, route);
+                            initiationController, initiationAction);
+                        return await OnInitiation(context, route);
                     default:
-                        return await this.OnResponse(context);
+                        return await OnResponse(context);
                 }
             }
             catch (Exception e)

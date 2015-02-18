@@ -14,8 +14,7 @@ namespace Smsgh.UssdFramework.Demo.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Index(UssdRequest request)
         {
-            var ussd = new Ussd();
-            return Ok(await ussd.Process(new RedisStore(), request, "Main", "Menu"));
+            return Ok(await Ussd.Process(new RedisStore(), request, "Main", "Menu"));
         } 
     }
 }

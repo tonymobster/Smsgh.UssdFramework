@@ -11,14 +11,14 @@ using Smsgh.UssdFramework.Stores;
 
 namespace Smsgh.UssdFramework
 {
-    public class UssdContext : IDisposable
+    internal class UssdContext : IDisposable
     {
         private string NextRouteKey { get { return Request.Mobile + "NextRoute"; } }
         private string DataBagKey { get { return Request.Mobile + "DataBag"; } }
         private Func<Task<UssdResponse>> Action { get; set; }
-        public UssdRequest Request { get; private set; }
-        public IStore Store { get; set; }
-        public UssdDataBag DataBag { get; private set; }
+        private UssdRequest Request { get; set; }
+        private IStore Store { get; set; }
+        private UssdDataBag DataBag { get; set; }
 
         public UssdContext(IStore store, UssdRequest request)
         {
@@ -26,33 +26,6 @@ namespace Smsgh.UssdFramework
             Request = request;
             DataBag = new UssdDataBag(Store, DataBagKey);
         }
-
-        #region Responders
-        /// <summary>
-        /// Reroute context processing.
-        /// </summary>
-        /// <param name="route"></param>
-        /// <returns></returns>
-        public async Task<UssdResponse> ReRoute(string route)
-        {
-            await SessionSetNextRoute(route);
-            await SessionSetAction();
-            return await SessionExecuteAction();
-        }
-
-        /// <summary>
-        /// Return a UssdResponse.
-        /// If <paramref name="nextRoute"/> is not provided
-        /// UssdResponse.Type is set to Release.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="nextRoute"></param>
-        /// <returns></returns>
-        public UssdResponse Response(string message, string nextRoute = null)
-        {
-            return UssdResponse.Render(message, nextRoute);
-        }
-        #endregion
 
         #region Session Management
         /// <summary>
@@ -109,6 +82,7 @@ namespace Smsgh.UssdFramework
                         && type.IsSubclassOf(typeof (UssdController)))
                     {
                         controller = (UssdController) assembly.CreateInstance(type.FullName);
+                        break;
                     }
                 }
             }
