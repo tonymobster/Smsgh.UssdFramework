@@ -6,11 +6,13 @@ namespace Smsgh.UssdFramework.Stores
 {
     public class RedisStore : IStore
     {
+        private ConnectionMultiplexer Connection { get; set; }
         private IDatabase Db { get; set; }
 
         public RedisStore(string dbAddress = "localhost", int dbNumber = 0)
         {
-            Db = ConnectionMultiplexer.Connect(dbAddress).GetDatabase(dbNumber);
+            Connection = ConnectionMultiplexer.Connect(dbAddress);
+            Db = Connection.GetDatabase(dbNumber);
         }
 
         public async Task<string> GetHashValue(string name, string key)
@@ -72,6 +74,11 @@ namespace Smsgh.UssdFramework.Stores
         private async Task ResetExpiry(string key)
         {
             await Db.KeyExpireAsync(key, TimeSpan.FromSeconds(90));
+        }
+
+        public void Dispose()
+        {
+            Connection.Dispose();
         }
     }
 }

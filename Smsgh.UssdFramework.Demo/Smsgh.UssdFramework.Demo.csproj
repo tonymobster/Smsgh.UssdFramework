@@ -78,13 +78,11 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
-    <Compile Include="DemoUssd.cs" />
+    <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UssdActions\Menus.cs" />
-    <Compile Include="UssdActions\SayMyNameInputs.cs" />
     <Compile Include="UssdView.cs" />
   </ItemGroup>
   <ItemGroup>

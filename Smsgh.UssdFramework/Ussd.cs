@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
@@ -8,22 +10,8 @@ using Smsgh.UssdFramework.Stores;
 
 namespace Smsgh.UssdFramework
 {
-    public abstract class Ussd
+    public class Ussd
     {
-        internal IStore Store { get; private set; }
-        internal Dictionary<string, Func<UssdContext, Task<UssdResponse>>> Routes { get;  private set; }
-
-        /// <summary>
-        /// Initalize with a database store.
-        /// </summary>
-        /// <param name="store">Database store instance</param>
-        protected Ussd(IStore store)
-        {
-            Store = store;
-            Routes = new Dictionary<string, Func<UssdContext, Task<UssdResponse>>>();
-        }
-
-
         #region Events
         /// <summary>
         /// Can be overridden to dynamically load appropriate screen at 
@@ -36,124 +24,64 @@ namespace Smsgh.UssdFramework
             string route)
         {
             await context.SessionClose();
-            return await context.ReRoute(route);
+            await context.SessionSetNextRoute(route);
+            return await this.OnResponse(context);
         }
 
         public virtual async Task<UssdResponse> OnResponse(UssdContext context)
         {
-            var exists = await context.SessionExists();
-            if (!exists)
+            while (true)
             {
-                throw new Exception("Session does not exist.");
-            }
-            return await context.SessionExecuteAction();
-        }
-
-        public virtual async Task<UssdResponse> OnRelease(UssdContext context)
-        {
-            await context.SessionClose();
-            return context.Response("Session closed.");
-        } 
-
-        public virtual async Task<UssdResponse> OnTimeout(UssdContext context)
-        {
-            await context.SessionClose();
-            return context.Response("Session timed out.");
-        } 
-        #endregion
-
-        #region Routing
-        /// <summary>
-        /// Adds an ActionDelegate to Routes.
-        /// </summary>
-        /// <param name="route"></param>
-        /// <param name="action"></param>
-        public void Route(string route, Func<UssdContext, Task<UssdResponse>> action)
-        {
-            Routes.Add(route, action);
-        }
-
-        /// <summary>
-        /// A helper to wire up a <paramref name="menu"/>'s routes.
-        /// </summary>
-        /// <param name="route"></param>
-        /// <param name="menu"></param>
-        /// <param name="routeChoices"></param>
-        public void RouteMenu(string route, Func<UssdContext, Task<string>> menu, 
-            Dictionary<string, string> routeChoices)
-        {
-            var routerRoute = route + "-router";
-            Route(route, MenuDisplay(routerRoute, menu));
-            Route(routerRoute, MenuRouter(route, routeChoices));
-        }
-
-        /// <summary>
-        /// Create an action to display a menu.
-        /// </summary>
-        /// <param name="routerRoute"></param>
-        /// <param name="menuDisplay"></param>
-        /// <returns></returns>
-        private static Func<UssdContext, Task<UssdResponse>> MenuDisplay(string routerRoute, 
-            Func<UssdContext, Task<string>> menuDisplay)
-        {
-            return async (c) =>
-            {
-                var message = await menuDisplay(c);
-                return c.Response(message, routerRoute);
-            };
-        }
-
-        /// <summary>
-        /// Create an action to route a menu's choice
-        /// </summary>
-        /// <param name="menuRoute"></param>
-        /// <param name="routeChoices"></param>
-        /// <returns></returns>
-        private static Func<UssdContext, Task<UssdResponse>> MenuRouter(string menuRoute,
-            IReadOnlyDictionary<string, string> routeChoices)
-        {
-            return async (c) =>
-            {
-                var choice = c.Request.SanitizedMessage;
-                if (!routeChoices.ContainsKey(choice))
+                var exists = await context.SessionExists();
+                if (!exists)
                 {
-                    throw new Exception(string.Format("No menu item exists " +
-                                                      "for selection {0}.", choice));
+                    throw new Exception("Session does not exist.");
                 }
-                var nextRoute = routeChoices[choice];
-                return await c.ReRoute(nextRoute);
-            };
+                var response = await context.SessionExecuteAction();
+                if (!response.IsRelease)
+                {
+                    await context.SessionSetNextRoute(response.NextRoute);
+                }
+                if (response.IsRedirect)
+                {
+                    continue;
+                }
+                return response;
+            }
         }
         #endregion
 
         /// <summary>
         /// Process <paramref name="request"/>
         /// </summary>
+        /// <param name="store"></param>
         /// <param name="request"></param>
-        /// <param name="startRoute"></param>
+        /// <param name="intiationController">Initiation controller</param>
+        /// <param name="intiationAction">Initiation action</param>
         /// <returns></returns>
-        public async Task<UssdResponse> Process(UssdRequest request, 
-            string startRoute = "Start")
+        public async Task<UssdResponse> Process(IStore store, UssdRequest request,
+            string intiationController, string intiationAction)
         {
-            var context = new UssdContext(this, request);
+            var context = new UssdContext(store, request);
             try
             {
                 switch (request.RequestType)
                 {
                     case UssdRequestTypes.Initiation:
-                        return await this.OnInitiation(context, startRoute);
-                    case UssdRequestTypes.Timeout:
-                        return await this.OnTimeout(context);
-                    case UssdRequestTypes.Release:
-                        return await this.OnRelease(context);
+                        var route = string.Format("{0}Controller.{1}", 
+                            intiationController, intiationAction);
+                        return await this.OnInitiation(context, route);
                     default:
                         return await this.OnResponse(context);
-
                 }
             }
             catch (Exception e)
             {
-                return UssdResponse.New(e.Message);
+                return UssdResponse.Render(e.Message);
+            }
+            finally
+            {
+                context.Dispose();
             }
         }
     }

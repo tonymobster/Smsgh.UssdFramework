@@ -46,6 +46,7 @@
     <Compile Include="Stores\RedisStore.cs" />
     <Compile Include="Ussd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UssdController.cs" />
     <Compile Include="UssdDataBag.cs" />
     <Compile Include="UssdInput.cs" />
     <Compile Include="UssdInputOption.cs" />

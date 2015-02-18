@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Cache;
+using System.Reflection;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,20 +11,18 @@ using Smsgh.UssdFramework.Stores;
 
 namespace Smsgh.UssdFramework
 {
-    public class UssdContext
+    public class UssdContext : IDisposable
     {
         private string NextRouteKey { get { return Request.Mobile + "NextRoute"; } }
         private string DataBagKey { get { return Request.Mobile + "DataBag"; } }
-        private Dictionary<string, Func<UssdContext, Task<UssdResponse>>> Routes { get; set; }
-        private Func<UssdContext, Task<UssdResponse>> Action { get; set; }
+        private Func<Task<UssdResponse>> Action { get; set; }
         public UssdRequest Request { get; private set; }
-        private IStore Store { get; set; }
+        public IStore Store { get; set; }
         public UssdDataBag DataBag { get; private set; }
 
-        public UssdContext(Ussd ussd, UssdRequest request)
+        public UssdContext(IStore store, UssdRequest request)
         {
-            Store = ussd.Store;
-            Routes = ussd.Routes;
+            Store = store;
             Request = request;
             DataBag = new UssdDataBag(Store, DataBagKey);
         }
@@ -50,7 +50,7 @@ namespace Smsgh.UssdFramework
         /// <returns></returns>
         public UssdResponse Response(string message, string nextRoute = null)
         {
-            return UssdResponse.New(message, nextRoute);
+            return UssdResponse.Render(message, nextRoute);
         }
         #endregion
 
@@ -62,7 +62,6 @@ namespace Smsgh.UssdFramework
         /// <returns></returns>
         internal async Task SessionSetNextRoute(string nextRoute)
         {
-            EnsureRouteExists(nextRoute);
             await Store.SetValue(NextRouteKey, nextRoute);
         }
 
@@ -92,8 +91,42 @@ namespace Smsgh.UssdFramework
         private async Task SessionSetAction()
         {
             var route = await Store.GetValue(NextRouteKey);
-            EnsureRouteExists(route);
-            this.Action = Routes[route];
+            var routeArray = route.Split('.');
+            if (routeArray.Length != 2)
+            {
+                throw new Exception("Invalid route format. Must be `SomeController.Action`." +
+                                    "Current route is " + route);
+            }
+            var controllerName = routeArray[0];
+            var actionName = routeArray[1];
+            var appDomain = AppDomain.CurrentDomain;
+            var assemblies = appDomain.GetAssemblies();
+            UssdController controller = null;
+            foreach (var assembly in assemblies)
+            {
+                var types = assembly.GetTypes();
+                foreach (var type in types)
+                {
+                    if (type.Name == controllerName 
+                        && type.IsSubclassOf(typeof (UssdController)))
+                    {
+                        controller = (UssdController) assembly.CreateInstance(type.FullName);
+                    }
+                }
+            }
+            if (controller == null)
+            {
+                throw new Exception(controllerName + " could not be found.");
+            }
+            controller.Request = Request;
+            controller.DataBag = DataBag;
+            var methodInfo = controller.GetType().GetMethod(actionName);
+            this.Action = async () =>
+            {
+                object[] args = {};
+                var response = (Task<UssdResponse>) methodInfo.Invoke(controller, args);
+                return await response;
+            };
         }
 
         /// <summary>
@@ -103,27 +136,13 @@ namespace Smsgh.UssdFramework
         internal async Task<UssdResponse> SessionExecuteAction()
         {
             await this.SessionSetAction();
-            var response = await this.Action(this);
-            if (!response.Release)
-            {
-                await this.SessionSetNextRoute(response.NextRoute);
-            }
-            return response;
+            return await this.Action();
         } 
         #endregion
 
-        /// <summary>
-        /// Throw error if specified <paramref name="route"/>
-        /// does not exist.
-        /// </summary>
-        /// <param name="route"></param>
-        public void EnsureRouteExists(string route)
+        public void Dispose()
         {
-            var exists = Routes.ContainsKey(route);
-            if (exists) return;
-            throw new Exception(string.Format("Route {0} " +
-                                              "does not exist.",
-                route));
+            Store.Dispose();
         }
     }
 }

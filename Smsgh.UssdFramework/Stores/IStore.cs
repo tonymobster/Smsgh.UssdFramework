@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Smsgh.UssdFramework.Stores
 {
-    public interface IStore
+    public interface IStore : IDisposable
     {
         // Hash store
         Task<string> GetHashValue(string name, string key);

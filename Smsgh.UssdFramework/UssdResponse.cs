@@ -14,9 +14,10 @@ namespace Smsgh.UssdFramework
 
 
         public string NextRoute { get; private set; }
-        public bool Release { get { return string.IsNullOrWhiteSpace(NextRoute); } }
+        public bool IsRelease { get { return string.IsNullOrWhiteSpace(NextRoute); } }
+        public bool IsRedirect { get; private set; }
 
-        public static UssdResponse New(string message, string nextRoute = null)
+        public static UssdResponse Render(string message, string nextRoute = null)
         {
             var type = string.IsNullOrWhiteSpace(nextRoute)
                 ? UssdResponseTypes.Release.ToString()
@@ -28,6 +29,16 @@ namespace Smsgh.UssdFramework
                 NextRoute = nextRoute,
             };
         }
+
+        public static UssdResponse Redirect(string nextRoute)
+        {
+            return new UssdResponse()
+            {
+                NextRoute = nextRoute,
+                IsRedirect = true,
+            };
+        }
+
 
         private enum UssdResponseTypes
         {
