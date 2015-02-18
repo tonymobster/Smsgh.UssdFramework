@@ -13,14 +13,7 @@ namespace Smsgh.UssdFramework
     public class Ussd
     {
         #region Events
-        /// <summary>
-        /// Can be overridden to dynamically load appropriate screen at 
-        /// intitiation.
-        /// By default loads "start" route.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="route"></param>
-        public virtual async Task<UssdResponse> OnInitiation(UssdContext context, 
+        private async Task<UssdResponse> OnInitiation(UssdContext context, 
             string route)
         {
             await context.SessionClose();
@@ -28,7 +21,7 @@ namespace Smsgh.UssdFramework
             return await this.OnResponse(context);
         }
 
-        public virtual async Task<UssdResponse> OnResponse(UssdContext context)
+        private async Task<UssdResponse> OnResponse(UssdContext context)
         {
             while (true)
             {
@@ -52,7 +45,7 @@ namespace Smsgh.UssdFramework
         #endregion
 
         /// <summary>
-        /// Process <paramref name="request"/>
+        /// Process USSD
         /// </summary>
         /// <param name="store"></param>
         /// <param name="request"></param>

@@ -99,13 +99,11 @@ namespace Smsgh.UssdFramework
             }
             var controllerName = routeArray[0];
             var actionName = routeArray[1];
-            var appDomain = AppDomain.CurrentDomain;
-            var assemblies = appDomain.GetAssemblies();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             UssdController controller = null;
             foreach (var assembly in assemblies)
             {
-                var types = assembly.GetTypes();
-                foreach (var type in types)
+                foreach (var type in assembly.GetTypes())
                 {
                     if (type.Name == controllerName 
                         && type.IsSubclassOf(typeof (UssdController)))
@@ -121,6 +119,11 @@ namespace Smsgh.UssdFramework
             controller.Request = Request;
             controller.DataBag = DataBag;
             var methodInfo = controller.GetType().GetMethod(actionName);
+            if (methodInfo == null)
+            {
+                throw new Exception(string.Format("{0} does not have method {1}.",
+                    controllerName, actionName));
+            }
             this.Action = async () =>
             {
                 object[] args = {};
