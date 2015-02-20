@@ -51,11 +51,17 @@ namespace Smsgh.UssdFramework
         /// <param name="request"></param>
         /// <param name="initiationController">Initiation controller</param>
         /// <param name="initiationAction">Initiation action</param>
+        /// <param name="data"></param>
         /// <returns></returns>
         public static async Task<UssdResponse> Process(IStore store, UssdRequest request,
-            string initiationController, string initiationAction)
+            string initiationController, string initiationAction,
+            Dictionary<string, string> data = null)
         {
-            var context = new UssdContext(store, request);
+            if (data == null)
+            {
+                data = new Dictionary<string, string>();
+            }
+            var context = new UssdContext(store, request, data);
             try
             {
                 switch (request.RequestType)

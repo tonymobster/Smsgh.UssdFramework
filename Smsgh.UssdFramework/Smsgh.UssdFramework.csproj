@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{550C021D-5E26-46CF-BFB6-1BBB898754C3}</ProjectGuid>
+    <ProjectGuid>{FF6FC060-D600-46C5-8099-2E278DBC6D1B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Smsgh.UssdFramework</RootNamespace>
@@ -42,20 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stores\IStore.cs" />
     <Compile Include="Stores\RedisStore.cs" />
     <Compile Include="Ussd.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UssdContext.cs" />
     <Compile Include="UssdController.cs" />
     <Compile Include="UssdDataBag.cs" />
     <Compile Include="UssdRequest.cs" />
-    <Compile Include="UssdContext.cs" />
     <Compile Include="UssdResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Smsgh.UssdFramework.Stores;
-using StackExchange.Redis;
 
 namespace Smsgh.UssdFramework
 {
     public class UssdController : IDisposable
     {
         public UssdRequest Request { get; set; }
+        public Dictionary<string, string> Data { get; set; } 
         public UssdDataBag DataBag { get; set; }
 
         #region Responders

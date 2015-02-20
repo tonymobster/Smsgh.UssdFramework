@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Cache;
 using System.Reflection;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -18,12 +17,14 @@ namespace Smsgh.UssdFramework
         private Func<Task<UssdResponse>> Action { get; set; }
         private UssdRequest Request { get; set; }
         private IStore Store { get; set; }
+        private Dictionary<string, string> Data { get; set; } 
         private UssdDataBag DataBag { get; set; }
 
-        public UssdContext(IStore store, UssdRequest request)
+        public UssdContext(IStore store, UssdRequest request, Dictionary<string, string> data)
         {
             Store = store;
             Request = request;
+            Data = data;
             DataBag = new UssdDataBag(Store, DataBagKey);
         }
 
@@ -92,10 +93,11 @@ namespace Smsgh.UssdFramework
             }
             controller.Request = Request;
             controller.DataBag = DataBag;
+            controller.Data = Data;
             var methodInfo = controller.GetType().GetMethod(actionName);
             if (methodInfo == null)
             {
-                throw new Exception(string.Format("{0} does not have method {1}.",
+                throw new Exception(string.Format("{0} does not have action {1}.",
                     controllerName, actionName));
             }
             this.Action = async () =>
