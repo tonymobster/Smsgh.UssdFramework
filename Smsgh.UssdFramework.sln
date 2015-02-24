@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smsgh.UssdFramework.Demo", "Smsgh.UssdFramework.Demo\Smsgh.UssdFramework.Demo.csproj", "{59EBDE21-CF95-4E7A-AC0E-C57E8A7F2132}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smsgh.UssdFramework", "Smsgh.UssdFramework\Smsgh.UssdFramework.csproj", "{FF6FC060-D600-46C5-8099-2E278DBC6D1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smsgh.UssdFramework", "Smsgh.UssdFramework\Smsgh.UssdFramework.csproj", "{D71C098E-E9D7-4E74-8E4B-9F0DFF406604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{59EBDE21-CF95-4E7A-AC0E-C57E8A7F2132}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59EBDE21-CF95-4E7A-AC0E-C57E8A7F2132}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59EBDE21-CF95-4E7A-AC0E-C57E8A7F2132}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF6FC060-D600-46C5-8099-2E278DBC6D1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF6FC060-D600-46C5-8099-2E278DBC6D1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF6FC060-D600-46C5-8099-2E278DBC6D1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF6FC060-D600-46C5-8099-2E278DBC6D1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D71C098E-E9D7-4E74-8E4B-9F0DFF406604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D71C098E-E9D7-4E74-8E4B-9F0DFF406604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D71C098E-E9D7-4E74-8E4B-9F0DFF406604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D71C098E-E9D7-4E74-8E4B-9F0DFF406604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

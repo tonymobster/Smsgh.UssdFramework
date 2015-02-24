@@ -1,4 +1,4 @@
-# Smsgh.UssdFramework (beta)
+# Smsgh.UssdFramework
 
 This is a natural successor to our [UssdFramework](http://github.com/smsgh/ussd-framework).
 
@@ -27,6 +27,14 @@ This might actually be the best .NET library for building USSD applications. Cor
 * `DataBag` helper in controllers for caching data across requests.
 
 ## Usage Tutorial
+
+### Installation
+
+The easiest way to install Smsgh.UssdFramework is via [NuGet](http://www.nuget.org/).
+
+```
+Install-Package Smsgh.UssdFramework
+```
 
 ### Setup
 

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FF6FC060-D600-46C5-8099-2E278DBC6D1B}</ProjectGuid>
+    <ProjectGuid>{D71C098E-E9D7-4E74-8E4B-9F0DFF406604}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Smsgh.UssdFramework</RootNamespace>

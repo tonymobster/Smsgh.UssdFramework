@@ -98,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Smsgh.UssdFramework\Smsgh.UssdFramework.csproj">
-      <Project>{ff6fc060-d600-46c5-8099-2e278dbc6d1b}</Project>
+      <Project>{d71c098e-e9d7-4e74-8e4b-9f0dff406604}</Project>
       <Name>Smsgh.UssdFramework</Name>
     </ProjectReference>
   </ItemGroup>
