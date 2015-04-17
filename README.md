@@ -15,8 +15,6 @@ __Smsgh.UssdFramework__ addresses these and a lot more by focusing on simplicity
 
 __Smsgh.UssdFramework__ allows you to easily build dynamic USSD applications on our [USSD platform](http://developers.smsgh.com/documentations/ussd).
 
-This might actually be the best .NET library for building USSD applications. Correct us if we are wrong.
-
 ## Key Features
 
 * Automated session management.
