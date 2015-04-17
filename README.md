@@ -122,6 +122,7 @@ See `Smsgh.UssdFramework.Demo/` folder in source for full sample source code.
 
 You can simulate USSD sessions using [USSD Mocker](https://github.com/smsgh/ussd-mocker).
 
-<hr>
 
-&copy; 2015 [SMSGH Solutions Ltd.](http://www.smsgh.com)
+# License
+
+MIT
