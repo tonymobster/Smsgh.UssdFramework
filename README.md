@@ -118,7 +118,7 @@ namespace Smsgh.UssdFramework.Demo.Controllers
 
 And that's it!
 
-See `Smsgh.UssdFramework.Demo/` folder in source for full sample source code.
+See [Smsgh.UssdFramework.Demo](https://github.com/smsgh/Smsgh.UssdFramework/tree/master/Smsgh.UssdFramework.Demo) folder in source for full sample source code.
 
 You can simulate USSD sessions using [USSD Mocker](https://github.com/smsgh/ussd-mocker).
 
