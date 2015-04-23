@@ -24,7 +24,7 @@ __Smsgh.UssdFramework__ allows you to easily build dynamic USSD applications on 
 * Dynamic routing.
 * `DataBag` helper in controllers for caching data across requests.
 
-## Usage Tutorial
+## Usage
 
 ### Installation
 
